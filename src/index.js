@@ -6,7 +6,22 @@ import reportWebVitals from './reportWebVitals';
 import {NativeBaseProvider} from 'native-base'
 import store from './store'
 import { Provider } from 'react-redux';
+import axios from 'axios';
 
+
+axios.interceptors.request.use((req)=>{
+  console.log(req,req.url)
+  if(req.url.includes('/auth')){
+    return req
+  }
+ const accessToken=localStorage.getItem('accessToken')
+ if(accessToken){
+   req.headers={
+      accessToken
+   }
+   return req
+ }
+})
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

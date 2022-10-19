@@ -42,6 +42,7 @@ const LoginForm = (props) => {
             }
             authApi.login(email,password).then(res=>{
                 const {user,accessToken}=res.data
+                localStorage.setItem('accessToken',accessToken)
                 dispatch(userLogin({user,accessToken}))
             }).catch(err=>{
                 console.log(err)

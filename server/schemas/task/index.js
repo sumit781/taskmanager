@@ -13,7 +13,6 @@ const task = new mongoose.Schema({
     },
     status:{type:String,default:'Pending'},
     date: { type: Date, default: Date.now },
-    history:[{modificationDate:Date,from:String,to:String,performedBy:String}]
   });
 
   module.exports=mongoose.model("task",task)

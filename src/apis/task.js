@@ -6,3 +6,7 @@ export const createTask=(data)=>{
         ...data
     })
 }
+
+export const getAllTasks=()=>{
+    return axios.get(`${HOST}/tasks`)
+}

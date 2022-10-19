@@ -5,14 +5,17 @@ import React, { Component } from "react";
 import { createTask } from "../../apis/task";
 import Header from "../../components/header";
 import Link from "../../components/navButton";
+import { ROLES, STATUS_OPTIONS } from "../../constants";
+import { fetchTasks } from "../../reducers/task";
 
 
 class AddTaskContainer extends Component{
     state = {
         title:'',
         description:'',
-        assignedTo:null,
+        assignedTo:ROLES.developer,
    }
+   
    submitTask=async ()=>{
         const {title,description,assignedTo}=this.state  
         const data={
@@ -29,7 +32,7 @@ class AddTaskContainer extends Component{
            <div style={{display:"flex",flex:1,justifyContent:'center',alignItems:'center'}}>
                 <div style={{width:'85%',height:'85%',display:'flex',flexDirection:'column',borderRadius:10,overflow:'hidden',borderColor:'GrayText',boxShadow:'0px 0px 8px 0px',backgroundColor:'aliceblue'}}>
                         <div style={{width:'100%',height:"2rem",backgroundColor:'rgb(77 68 231)',alignItems:'center',display:'flex'}}>
-                        <p style={{marginLeft:10,color:'white'}}>CREATE TASK</p>
+                        <p style={{marginLeft:10,color:'white',fontSize:'.8rem'}}>CREATE TASK</p>
                         </div>
                         <div style={{display:'flex',flexWrap:'wrap',marginLeft:10}} >
                         {/* <div style={{display:'flex',flexDirection:'row',height:'40px',flex:1,justifyContent:'center'}}> */}
@@ -37,17 +40,15 @@ class AddTaskContainer extends Component{
                             {/* </div> */}
                         <div style={{display:'flex',flexDirection:'row',height:'40px',alignSelf:'center',flex:1,justifyContent:'flex-start',}}>
                         <p style={{alignSelf:'center',fontSize:'.8rem',fontWeight:'bold'}}>Assigned to :</p>
-                        <select style={{border:'none',marginLeft:10,width:'145px',height:"25px",borderRadius:5,alignSelf:'center'}}>
-                            <option  value={'sumit'}>SUmit</option>
-                            <option>SUmit</option>
-                            <option>SUmit</option>
+                       <select onSelect={this.state.assignedTo} style={{border:'none',marginLeft:10,width:'145px',height:"25px",borderRadius:5,alignSelf:'center'}}>
+                            {Object.keys(ROLES).map((role)=><option value={ROLES[role]}>{ROLES[role]}</option>)}
                         </select>
                         </div>
                         </div>
                         <div style={{display:'flex',flex:4,flexDirection:'column',marginLeft:10}}>
                         <p style={{fontSize:'.8rem',fontWeight:'bold'}}>Description</p>
                         <textarea style={{width:'80%',height:'80%',borderRadius:5,border:'none',resize:'none',fontFamily:'sans-serif',paddingTop:'4px'}}/>
-                        <Button right={5} w={20} height={19} alignSelf="center" mt={2} fontSize={'sm'}  variant={'solid'}> Submit </Button>
+                        <Button right={5} w={20} height={19} backgroundColor={"#0567a0"} alignSelf="center" mt={2} fontSize={'sm'}  variant={'solid'}> Submit </Button>
                         </div>
                     
                 </div>
@@ -56,9 +57,9 @@ class AddTaskContainer extends Component{
     }
 }
 
-const mapDispatchToProp=(dispatch)=>{
-    return {
-        }
+const mapDisptachToProp=(dispatch)=>{
+return {
+    getAllTasks:()=>dispatch(fetchTasks())
 }
-
-export default connect(null,mapDispatchToProp)(AddTaskContainer);
+}
+export default connect(null,mapDisptachToProp)(AddTaskContainer);

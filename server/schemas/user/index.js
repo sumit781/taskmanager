@@ -5,10 +5,6 @@ const user = new mongoose.Schema({
   role: String,
   emailId: { type: String, required: true },
   date: { type: Date, default: Date.now },
-  tasks: [{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'task'
-  }],
   password: {
     type: String,
     required: true,

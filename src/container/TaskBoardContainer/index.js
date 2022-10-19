@@ -1,20 +1,23 @@
 import { Action, redirect } from "@remix-run/router";
 import { Button, CheckIcon, Input, Select } from "native-base";
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Navigate, Route, Router } from "react-router-dom";
 import TaskBoard from "../../components/taskBoard";
-import TaskButton from "../../components/taskButton";
+import TaskButton from "../../components/taskListButton";
 import { FILTER_TYPE, STATUS_OPTIONS } from "../../constants";
+import { fetchTasks } from "../../reducers/task";
 
 const tableHeadiings = ["No.", "Title", "Status", "Assigned To"];
-const tableData=[{id:'21312312',title:'update the front page',status:'in-progress',assignedTo:'Sumit singh'}
-,{id:'21312312',title:'update the details',status:'Ready for QA',assignedTo:'Raj'},
-{id:'21312312',title:'update work',status:'in-progress',assignedTo:'Riya'},
-{id:'21312312',title:'update things',status:'in-progress',assignedTo:'Deepak'},
-{id:'21312312',title:'update the asdasd asd asdasd asd as asd asd as',status:'Done',assignedTo:'Charles'},
-{id:'21312312',title:'update the front page',status:'Done',assignedTo:'Ted'}]
-export default class TaskBoardContainer extends Component {
-    render() {
+
+class TaskBoardContainer extends Component {
+  componentDidMount(){
+
+    console.log(this.props)
+    this.props.getAllTasks()
+  }
+  render() {
+    const { tasks } = this.props;
     return (
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         <div style={{ flex: 1 }}>
@@ -24,11 +27,9 @@ export default class TaskBoardContainer extends Component {
               <span style={{ fontSize: ".7rem", alignSelf: "center" }}>
                 {"FILTER :  "}
               </span>
-              <Input variant={"underlined"} ml={2}/>
+              <Input variant={"underlined"} ml={2} />
               <select
-                style={{ border: 'none',
-                        fontSize: '0.7rem'
-                    }}
+                style={{ border: "none", fontSize: "0.7rem" }}
                 value={FILTER_TYPE.user}
               >
                 {Object.keys(FILTER_TYPE).map((item, index) => (
@@ -41,7 +42,7 @@ export default class TaskBoardContainer extends Component {
               </select>
             </div>
             {/* <div style={{display:'flex',justifyContent:'flex-end',flex:1}}> */}
-            <TaskButton/>
+            <TaskButton />
             {/* </div> */}
           </TaskBoard.TaskOptionsContainer>
         </div>
@@ -53,19 +54,26 @@ export default class TaskBoardContainer extends Component {
           }}
         >
           <TaskBoard.tableContainer>
-            <thead style={{ display: "flex", width: "100%", height: "2rem",borderBottom:'1rem' }}>
+            <thead
+              style={{
+                display: "flex",
+                width: "100%",
+                height: "2rem",
+                borderBottom: "1rem",
+              }}
+            >
               <tr style={{ display: "flex", flex: 1 }}>
-                {tableHeadiings.map((item,i) => (
+                {tableHeadiings.map((item, i) => (
                   <th
                     style={{
-                      flex: i === 1 ? 3 :  i == 0? 1:2,
+                      flex:i==1?3:i==0?1:2,
                       height: "2rem",
                       backgroundColor: "#0567a0",
                       alignItems: "center",
                       justifyContent: "center",
                       display: "flex",
-                      color:'white',
-                      fontSize:'.8rem'
+                      color: "white",
+                      fontSize: ".8rem",
                     }}
                   >
                     {item}
@@ -74,54 +82,87 @@ export default class TaskBoardContainer extends Component {
               </tr>
             </thead>
             <tbody>
-                {tableData.map((item,index)=>{          
-                      return (<tr style={{ display: "flex", flex: 1,backgroundColor:'aliceblue',marginBottom:5}}>
-                                    {
-                                        Object.keys(item).map((task,i)=>{
-                                            return (
-                                            i===2?
-                                            // dropdown for progress
-                                            <th key={task.id*i} style={{flex: i == 1 ? 3 : i == 0? 1:2,
-                                                height: "2rem",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                display: "flex",
-                                                fontSize:'.8rem'}} >
-                                                  <select style={{ border: 'none',
-                                                    width: '100%',
-                                                    textAlign: 'center',
-                                                    borderRadius: 5 ,
-                                                    maxWidth:170    }} value={item[task]}>
-                                                        {
-                                                            Object.keys(STATUS_OPTIONS).map(item=>{
-                                                               return <option value={STATUS_OPTIONS[item]}>{item.toUpperCase()}</option>
-                                                            })
-                                                        }
-                                                  </select>
-                                                     </th>:
-                                                // for showing the serial number
-                                                i==0?<th key={task.id*i} style={{flex: i == 1 ? 3 : i == 0? 1:2,
-                                                height: "2rem",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                display: "flex",
-                                                fontSize:'.8rem'}} >
-                                                  {index+1}
-                                                     </th>:
-                                                // for other cells
-                                                <th key={task.id*i} style={{flex: i == 1 ? 3 : i == 0? 1:2,
-                                                height: "2rem",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                display: "flex",
-                                                fontSize:'.8rem'}} >
-                                                  {item[task]}
-                                                     </th>)
-                                        })
-                                    }
-                       </tr> 
-                        )  
-                })}
+              {tasks.map((items, index) => {
+                return (
+                  <tr
+                    style={{
+                      display: "flex",
+                      flex: 1,
+                      backgroundColor: "aliceblue",
+                      marginBottom: 5,
+                    }}
+                  >
+                    <th
+                          key={index*Math.random()}
+                          style={{
+                            flex: 1,
+                            height: "2rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            display: "flex",
+                            fontSize: ".8rem",
+                          }}
+                        >
+                          {index + 1}
+                        </th>
+                    {
+                      console.log(Object.keys(items))
+                    }
+                    {
+                    Object.keys(items).map((task, i) => {
+                      return i === 2 ? (
+                        // dropdown for progress
+                        <th
+                          key={task.id * i}
+                          style={{
+                            flex: i == 0 ? 3 : 2,
+                            height: "2rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            display: "flex",
+                            fontSize: ".8rem",
+                          }}
+                        >
+                          <select
+                            style={{
+                              border: "none",
+                              width: "100%",
+                              textAlign: "center",
+                              borderRadius: 5,
+                              maxWidth: 170,
+                            }}
+                            value={items[task]}
+                          >
+                            {Object.keys(STATUS_OPTIONS).map((item) => {
+                              return (
+                                <option key={item} value={STATUS_OPTIONS[item]}>
+                                  {STATUS_OPTIONS[item]}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </th>
+                      ) : 
+                       (
+                        // for other cells
+                        <th
+                          key={task.id * i}
+                          style={{
+                            flex:i == 0 ? 3 : 2,
+                            height: "2rem",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            display: "flex",
+                            fontSize: ".8rem",
+                          }}
+                        >
+                          {items[task]}
+                        </th>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
             </tbody>
           </TaskBoard.tableContainer>
         </div>
@@ -129,3 +170,17 @@ export default class TaskBoardContainer extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const { tasks } = state.TaskReducer;
+  return {
+    tasks,
+  };
+};
+
+const mapDisptachToProp=(dispatch)=>{
+  return {
+      getAllTasks:()=>dispatch(fetchTasks())
+  }
+  }
+export default connect(mapStateToProps,mapDisptachToProp)(TaskBoardContainer);

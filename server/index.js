@@ -8,6 +8,7 @@ const app = express()
 const db = require('./models');
 const userConrollers = require('./controller/user.controller');
 const { mongoose } = require('./models');
+const taskController=require('./controller/task.controller')
 db.mongoose
   .connect(`mongodb+srv://sumitsingh0103:qwertyuiop@taskmanager.ydotm8p.mongodb.net/?retryWrites=true&w=majority`, {
     useNewUrlParser: true,
@@ -45,27 +46,12 @@ app.listen(port, () => {
 
 app.post('/auth',login)
 app.get('/users',userConrollers.getUsers)
-app.post('/task',async (req,resp,next)=>{
-    try{
-        const {title,description,assignedTo,date} = req.body
-        const task=new db.TASKS({
-         title,
-         date,
-         assignedTo,
-         description
-        })
-        const data=await task.save()
-        console.log(data)
-        resp.status(200).json({message:'task created successfully',task:data})
-    }catch(err){
-        console.log(err)
-        resp.status(400).json({message:'task creation unsuccessfull',status:400})
-    }
-})
+app.get('/tasks',taskController.getAllTask)
+app.post('/task',taskController.createTask)
 
-app.use((res,resp,next,err)=>{
-  console.log(err)
-})
+// app.use((res,resp,next,err)=>{
+//   console.log(err)
+// })
 
 function initial(){
     db.USERS.estimatedDocumentCount({role:"Admin"},(err,result)=>{

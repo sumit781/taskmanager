@@ -6,11 +6,17 @@ export const FILTER_TYPE={
     status:"STATUS"
 }
 export const STATUS_OPTIONS = {
-    inprogress:'in-progress',
-    pending:'pending',
-    done:'done',
-    qa:'ready for QA',
+    inprogress:'In-progress',
+    pending:'Pending',
+    done:'Done',
+    qa:'Ready for QA',
     qaprogress:'QA in progress'
+}
+
+export const ROLES={
+    admin:'Admin',
+    developer:'Developer',
+    qaTester:'QA-Tester'
 }
 
 export const EMAIL_REGX=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
