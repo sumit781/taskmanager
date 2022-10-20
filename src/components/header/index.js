@@ -33,7 +33,7 @@ margin-left: 2vw;
 color: white;
 `
 const adminHeaderOptions=[{name:"Taskboard",route:'/'},{name:"Add TASK",route:'/addTask'},{name:"Logout",route:'/logout'}]
-const userHeaderOptions=[{name:"Taskboard",route:'/'},{name:"Logout",route:'/logout'}]
+const userHeaderOptions=[{name:"Taskboard",route:'/'},{name:"Logout"}]
 const Header= (props)=>{
     const dispatch=useDispatch()
     // const{user}=useSelector(store=>store.UserReducer)
@@ -48,7 +48,7 @@ const Header= (props)=>{
                     {
                         console.log(props.user)
                     }
-                        {  props.user!==null ?( props.user?.role==ROLES.admin?adminHeaderOptions.map((item,index)=>{
+                        {  props.user!==null ?( props.user?.user.role==ROLES.admin?adminHeaderOptions.map((item,index)=>{
                                 return (
                                     <Link  key={item.name} to={item.route} onClick={item.name==="Logout"?onLogout:null}>{item.name.toUpperCase()}</Link>
                                 )

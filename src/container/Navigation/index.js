@@ -10,6 +10,9 @@ const Navigation = () => {
   return (
     <Routes>
       <Route index path="/" element={<Taskboard />} />
+      {
+        console.log(user)
+      }
       {user?.role==ROLES.admin?<Route path="/addTask"  element={<AddTask />} />:null}
       <Route path="*" action={(props)=>{
 

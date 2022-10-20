@@ -22,6 +22,10 @@ axios.interceptors.request.use((req)=>{
    return req
  }
 })
+
+axios.interceptors.response.use(resp=>{
+    
+})
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
