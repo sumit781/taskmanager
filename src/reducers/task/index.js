@@ -44,6 +44,7 @@ const TaskReducer = createSlice({
         },
         removeTasks:(state)=>{
             state.tasks=[]
+            state.selectedTask=null
             state.tasksDetails=[]
         }
     },

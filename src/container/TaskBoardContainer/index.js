@@ -7,7 +7,7 @@ import TaskBoard from "../../components/taskBoard";
 import TaskButton from "../../components/taskButton";
 import TaskDetailForm from "../../components/taskDetailForm";
 import { FILTER_TYPE, ROLES, STATUS_OPTIONS } from "../../constants";
-import { fetchTasks, updateSelectedTask, updateTask } from "../../reducers/task";
+import { fetchTasks, removeTasks, updateSelectedTask, updateTask } from "../../reducers/task";
 
 const tableHeadiings = ["No.", "Title", "Status", "Assigned To","Role"];
 
@@ -26,6 +26,9 @@ class TaskBoardContainer extends Component {
     this.props.getAllTasks()
   }
 
+  componentWillUnmount(){
+    this.props.removeTasks()
+  }
   onSelectTask=(index)=>{
     const {tasksDetails}=this.props
       this.setState({
@@ -243,7 +246,8 @@ const mapStateToProps = (state) => {
 const mapDisptachToProp=(dispatch)=>{
   return {
       getAllTasks:()=>dispatch(fetchTasks()),
-      updateTask:(id,value)=>dispatch(updateSelectedTask({id,value}))
+      updateTask:(id,value)=>dispatch(updateSelectedTask({id,value})),
+      removeTasks:()=>dispatch(removeTasks())
   }
   }
 export default connect(mapStateToProps,mapDisptachToProp)(TaskBoardContainer);

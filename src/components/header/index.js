@@ -3,6 +3,7 @@ import { NavLink} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ROLES } from "../../constants";
 import { userLogout } from "../../reducers/auth";
+import {removeTasks} from '../../reducers/task'
 // import { NavLink } from "react-router-dom";
 
 const Link=styled(NavLink)`
@@ -41,6 +42,7 @@ const Header= (props)=>{
     let onLogout=() =>{ 
         localStorage.removeItem('accessToken')
         localStorage.removeItem('user')
+        dispatch(removeTasks())
         dispatch(userLogout())
     }
     return (
