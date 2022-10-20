@@ -140,7 +140,7 @@ const TaskDetailForm=({heading,isEditable=true,taskDetails,users=[],...props}) =
                 </FormHeading>
                <FormTitleBody>
                     <Title>TITLE</Title>
-                    <Input width={"45vw"} onChange={setTitleValue} editable={isEditable} h="5" backgroundColor={'white'} value={title} marginLeft={'2'} alignSelf="center" variant={'filled'} marginRight={10} />
+                    <Input width={"45vw"} maxLength={20} onChange={setTitleValue} editable={isEditable} h="5" backgroundColor={'white'} value={title} marginLeft={'2'} alignSelf="center" variant={'filled'} marginRight={10} />
                     <RoleContainer>
                         <>
                         <p style={{alignSelf:'center',fontSize:'.8rem',fontWeight:'bold'}}>Assigned to :</p>

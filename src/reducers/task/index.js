@@ -15,7 +15,7 @@ export const fetchTasks = createAsyncThunk(
     console.log(data,'///// id status')
     const response = await updateTask(data.id,data.value)
     console.log(response.data,'/// updated task')
-    return response.data
+    return data
   })
 const TaskReducer = createSlice({
     name:'TaskReducer',
@@ -63,10 +63,32 @@ const TaskReducer = createSlice({
         state.tasksDetails=action.payload.tasks
         })
         builder.addCase(updateSelectedTask.fulfilled,(state,action)=>{
-            return state
+
+            console.log(action.payload,'/// payload')
+            let updateTaskDetail=state.tasksDetails.map((item,index)=>{
+                if(item._id==action.payload.id){
+                    return {
+                        ...item,
+                        status:action.payload.value
+                    }
+                }
+                return item
+             })
+             state.tasks=updateTaskDetail.map(item=>{
+                return {
+                    title:item.title,
+                    status:item.status,
+                    assignedTo:item.assignedTo.name,
+                    role:item.assignedTo.role
+                }
+            })
+            state.tasksDetails=updateTaskDetail
         })
-      },
-})
+       
+      }
+
+    })
+
 
 export const {getAllTask,removeTask,removeTasks,selectedTask} = TaskReducer.actions
 

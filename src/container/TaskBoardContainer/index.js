@@ -83,7 +83,7 @@ class TaskBoardContainer extends Component {
               </select>
             </div>
             {/* <div style={{display:'flex',justifyContent:'flex-end',flex:1}}> */}
-            {this.props.user.role===ROLES.admin?<TaskButton />:null}
+            {this.props.user!==undefined && this.props.user.user?.role===ROLES.admin?<TaskButton />:null}
             {/* </div> */}
           </TaskBoard.TaskOptionsContainer>
         </div>
@@ -123,7 +123,9 @@ class TaskBoardContainer extends Component {
                 ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody style={{overflowY: 'scroll',
+                height: '80%',
+              }}>
               {tasks.map((items, index) => {
                 return (
                   <tr

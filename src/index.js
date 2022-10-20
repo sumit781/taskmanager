@@ -24,7 +24,8 @@ axios.interceptors.request.use((req)=>{
 })
 
 axios.interceptors.response.use(resp=>{
-    
+  console.log(resp,'.....///resp')
+    return resp
 })
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

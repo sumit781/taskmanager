@@ -41,6 +41,7 @@ const LoginForm = (props) => {
                 })
             }
             authApi.login(email,password).then(res=>{
+              console.log(res,'/// resp login')
                 const {user,accessToken}=res.data
                 localStorage.setItem('accessToken',accessToken)
                 localStorage.setItem('user',JSON.stringify(user))

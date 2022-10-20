@@ -32,13 +32,15 @@ font-weight: 900;
 margin-left: 2vw;
 color: white;
 `
-const adminHeaderOptions=[{name:"Taskboard",route:'/'},{name:"Add TASK",route:'/addTask'},{name:"Logout",route:'/logout'}]
+const adminHeaderOptions=[{name:"Taskboard",route:'/'},{name:"Add TASK",route:'/addTask'},,{name:"Logout"}]
 const userHeaderOptions=[{name:"Taskboard",route:'/'},{name:"Logout"}]
 const Header= (props)=>{
+    console.log(props,'///props')
     const dispatch=useDispatch()
-    // const{user}=useSelector(store=>store.UserReducer)
+    const{user}=useSelector(store=>store.UserReducer)
     let onLogout=() =>{ 
         localStorage.removeItem('accessToken')
+        localStorage.removeItem('user')
         dispatch(userLogout())
     }
     return (
@@ -46,9 +48,9 @@ const Header= (props)=>{
                 <Heading>Dev Manager</Heading>
                 <div style={{height:'100%',width:'20rem',display:"flex",justifyContent:'space-evenly',alignItems:'center'}}>
                     {
-                        console.log(props.user)
+                        console.log(user.user,'/// indose html')
                     }
-                        {  props.user!==null ?( props.user?.user.role==ROLES.admin?adminHeaderOptions.map((item,index)=>{
+                        { user.user!==undefined?( user.user.role===ROLES.admin?adminHeaderOptions.map((item,index)=>{
                                 return (
                                     <Link  key={item.name} to={item.route} onClick={item.name==="Logout"?onLogout:null}>{item.name.toUpperCase()}</Link>
                                 )

@@ -15,7 +15,7 @@ function App() {
     console.log(user)
     const accessToken=localStorage.getItem('accessToken')
     if(user && accessToken){
-      dispatch(userLogin(JSON.parse(user),accessToken))
+      dispatch(userLogin({user:JSON.parse(user),accessToken}))
     }
   },[])
   return (
