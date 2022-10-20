@@ -1,20 +1,60 @@
-import { Action, redirect } from "@remix-run/router";
+
 import { Button, CheckIcon, Input, Select } from "native-base";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Navigate, Route, Router } from "react-router-dom";
 import TaskBoard from "../../components/taskBoard";
-import TaskButton from "../../components/taskListButton";
-import { FILTER_TYPE, STATUS_OPTIONS } from "../../constants";
-import { fetchTasks } from "../../reducers/task";
+import TaskButton from "../../components/taskButton";
+import TaskDetailForm from "../../components/taskDetailForm";
+import { FILTER_TYPE, ROLES, STATUS_OPTIONS } from "../../constants";
+import { fetchTasks, updateSelectedTask, updateTask } from "../../reducers/task";
 
-const tableHeadiings = ["No.", "Title", "Status", "Assigned To"];
+const tableHeadiings = ["No.", "Title", "Status", "Assigned To","Role"];
 
 class TaskBoardContainer extends Component {
-  componentDidMount(){
 
-    console.log(this.props)
+  state={
+    showDetails:false,
+    selectedTask:null,
+    filter:{
+      value:'',
+      type:FILTER_TYPE.user
+    }
+  }
+  componentDidMount(){
+    // console.log(this.props)
     this.props.getAllTasks()
+  }
+
+  onSelectTask=(index)=>{
+    const {tasksDetails}=this.props
+      this.setState({
+        selectedTask:tasksDetails[index],
+        showDetails:true
+      })
+  }
+
+  hideDetails=()=>{
+    this.setState({
+      selectedTask:null,
+      showDetails:false
+    })
+  }
+
+  updateFilterType=(event)=>{
+    this.setState({
+        filter:{
+          ...this.state.filter,
+          type:event.target.value
+        }
+    })
+  }
+
+  updateTask=(index,value)=>{
+    console.log(index,value)
+    const {tasksDetails}=this.props
+    console.log(tasksDetails,' ..///////////')
+    this.props.updateTask(tasksDetails[index]._id,value)
   }
   render() {
     const { tasks } = this.props;
@@ -30,19 +70,20 @@ class TaskBoardContainer extends Component {
               <Input variant={"underlined"} ml={2} />
               <select
                 style={{ border: "none", fontSize: "0.7rem" }}
-                value={FILTER_TYPE.user}
+                value={this.state.filter.type}
+                onChange={this.updateFilterType}
               >
                 {Object.keys(FILTER_TYPE).map((item, index) => (
                   <option
                     label={FILTER_TYPE[item]}
                     value={FILTER_TYPE[item]}
-                    key={index}
+                    key={item+index}
                   />
                 ))}
               </select>
             </div>
             {/* <div style={{display:'flex',justifyContent:'flex-end',flex:1}}> */}
-            <TaskButton />
+            {this.props.user.role===ROLES.admin?<TaskButton />:null}
             {/* </div> */}
           </TaskBoard.TaskOptionsContainer>
         </div>
@@ -65,6 +106,7 @@ class TaskBoardContainer extends Component {
               <tr style={{ display: "flex", flex: 1 }}>
                 {tableHeadiings.map((item, i) => (
                   <th
+                  key={item+Math.random()}
                     style={{
                       flex:i==1?3:i==0?1:2,
                       height: "2rem",
@@ -91,6 +133,7 @@ class TaskBoardContainer extends Component {
                       backgroundColor: "aliceblue",
                       marginBottom: 5,
                     }}
+                    onClick={()=>this.onSelectTask(index)}
                   >
                     <th
                           key={index*Math.random()}
@@ -110,7 +153,8 @@ class TaskBoardContainer extends Component {
                     }
                     {
                     Object.keys(items).map((task, i) => {
-                      return i === 2 ? (
+                      console.log(task,i)
+                      return i === 1 ? (
                         // dropdown for progress
                         <th
                           key={task.id * i}
@@ -132,10 +176,16 @@ class TaskBoardContainer extends Component {
                               maxWidth: 170,
                             }}
                             value={items[task]}
+                            onClick={(event)=>{
+                              event.stopPropagation()
+                            }}
+                            onChange={(event)=>{
+                              this.updateTask(index,event.target.value)
+                            }}
                           >
                             {Object.keys(STATUS_OPTIONS).map((item) => {
                               return (
-                                <option key={item} value={STATUS_OPTIONS[item]}>
+                                <option key={item+Math.random()} value={STATUS_OPTIONS[item]}>
                                   {STATUS_OPTIONS[item]}
                                 </option>
                               );
@@ -166,21 +216,32 @@ class TaskBoardContainer extends Component {
             </tbody>
           </TaskBoard.tableContainer>
         </div>
+         {
+          this.state.showDetails ?
+          <TaskBoard.OverLay>
+            <TaskBoard.TaskDetailContainer>
+              <TaskDetailForm isEditable={false} heading={'Details'} taskDetails={this.state.selectedTask} hideDetails={this.hideDetails} />
+            </TaskBoard.TaskDetailContainer>
+          </TaskBoard.OverLay> : null
+         }
       </div>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  const { tasks } = state.TaskReducer;
+  const { tasks,tasksDetails } = state.TaskReducer;
+  console.log(tasks,tasksDetails)
+  const {user} = state.UserReducer;
   return {
-    tasks,
+    tasks,tasksDetails,user
   };
 };
 
 const mapDisptachToProp=(dispatch)=>{
   return {
-      getAllTasks:()=>dispatch(fetchTasks())
+      getAllTasks:()=>dispatch(fetchTasks()),
+      updateTask:(id,value)=>dispatch(updateSelectedTask({id,value}))
   }
   }
 export default connect(mapStateToProps,mapDisptachToProp)(TaskBoardContainer);

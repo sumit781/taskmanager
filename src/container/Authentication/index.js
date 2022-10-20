@@ -5,6 +5,8 @@ import LoginForm from "../../components/loginForm";
 import AuthItems from "../../components/Auth";
 
 const Auth = (props) => {
+
+  
   return !props.signedIn ? (
     <AuthItems.AuthContainer>
       <AuthItems.BannerContainer>

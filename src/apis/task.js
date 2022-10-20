@@ -10,3 +10,12 @@ export const createTask=(data)=>{
 export const getAllTasks=()=>{
     return axios.get(`${HOST}/tasks`)
 }
+
+export const updateTask=(id,status)=>{
+    console.log()
+    return axios.patch(`${HOST}/task`,{
+        data:{
+            id,status
+        }
+    })
+}

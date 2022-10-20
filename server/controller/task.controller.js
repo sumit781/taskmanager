@@ -23,9 +23,9 @@ const getAllTask=async (req,resp,next)=>{
         const {accesstoken}=req.headers
         const {role,id}=jwt.decode(accesstoken,{json:true})
         if(role=='Admin'){
-            data=await db.TASKS.find({}).populate('assignedTo',"_id name")
+            data=await db.TASKS.find({}).populate('assignedTo',"_id name role")
         }else{
-            data=await db.TASKS.find({assignedTo:id}).populate('assignedTo',"_id name")
+            data=await db.TASKS.find({assignedTo:id}).populate('assignedTo',"_id name role")
         }
         resp.status(200).json({
             message:'Successfull',
@@ -39,7 +39,8 @@ const getAllTask=async (req,resp,next)=>{
 
 const updatetaskStatus=async (req,resp,next)=>{
     try{
-        const {id,status}=req.body
+        console.log(req.body)
+        const {id,status}=req.body.data
         const {accesstoken}=req.headers
         const data=jwt.decode(accesstoken,{
                 json:true
@@ -64,6 +65,7 @@ const updatetaskStatus=async (req,resp,next)=>{
             resp.status(400).json({message:'UnAuthorised user'})
         }
     }catch(err){
+        console.log(err)
         resp.status(400).json({message:'invalid entry',status:400})
     }
 }

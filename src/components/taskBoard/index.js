@@ -16,8 +16,21 @@ width: 98vw;
 padding-top: 10px;
 flex-direction: column;
 `
-
+const OverLay=styled.div`
+    position: absolute;
+    width: 100vw;
+    height: 90vh;
+    background-color: rgba(0,0,0,0.5);
+`
+const TaskDetailContainer=styled.div`
+    display:flex;
+    width: 100vw;
+    height: 90vh;
+    position: fixed;
+`
 export default {
     TaskOptionsContainer,
-    tableContainer
+    tableContainer,
+    OverLay,
+    TaskDetailContainer
 }

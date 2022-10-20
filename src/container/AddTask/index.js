@@ -7,59 +7,51 @@ import Header from "../../components/header";
 import Link from "../../components/navButton";
 import { ROLES, STATUS_OPTIONS } from "../../constants";
 import { fetchTasks } from "../../reducers/task";
-
-
+import TaskDetailForm from "../../components/taskDetailForm";
+import { fetchUsers } from "../../reducers/auth";
+import {Toast} from 'native-base'
+import {Navigate} from 'react-router'
 class AddTaskContainer extends Component{
-    state = {
-        title:'',
-        description:'',
-        assignedTo:ROLES.developer,
-   }
+
+    componentDidMount(){
+        const {user,users}=this.props
+     if(user.user?.role==ROLES.admin){
+        this.props.getAllUsers()
+     }
+    }
    
-   submitTask=async ()=>{
-        const {title,description,assignedTo}=this.state  
+   submitTask=async ({title,description,assignedTo})=>{ 
         const data={
             title,
             description,
-            assignedTo:assignedTo.id,
+            assignedTo,
             date:new Date().toISOString()
         }
-       const task=await createTask(data)
-
+        try{
+            const task=await createTask(data)
+           alert("task added successfully")
+           
+        }catch(err){
+            alert("task added unsuccessfully :"+err.message)
+            console.log('task unsuccessfull',err,err.message)
+        }
    }
     render(){
         return (
-           <div style={{display:"flex",flex:1,justifyContent:'center',alignItems:'center'}}>
-                <div style={{width:'85%',height:'85%',display:'flex',flexDirection:'column',borderRadius:10,overflow:'hidden',borderColor:'GrayText',boxShadow:'0px 0px 8px 0px',backgroundColor:'aliceblue'}}>
-                        <div style={{width:'100%',height:"2rem",backgroundColor:'rgb(77 68 231)',alignItems:'center',display:'flex'}}>
-                        <p style={{marginLeft:10,color:'white',fontSize:'.8rem'}}>CREATE TASK</p>
-                        </div>
-                        <div style={{display:'flex',flexWrap:'wrap',marginLeft:10}} >
-                        {/* <div style={{display:'flex',flexDirection:'row',height:'40px',flex:1,justifyContent:'center'}}> */}
-                        <p style={{fontSize:'.8rem',fontWeight:'bold'}}>TITLE</p><Input width={"45vw"} h="5" backgroundColor={'white'} marginLeft={'5'} alignSelf="center" variant={'filled'} marginRight={10} />
-                            {/* </div> */}
-                        <div style={{display:'flex',flexDirection:'row',height:'40px',alignSelf:'center',flex:1,justifyContent:'flex-start',}}>
-                        <p style={{alignSelf:'center',fontSize:'.8rem',fontWeight:'bold'}}>Assigned to :</p>
-                       <select onSelect={this.state.assignedTo} style={{border:'none',marginLeft:10,width:'145px',height:"25px",borderRadius:5,alignSelf:'center'}}>
-                            {Object.keys(ROLES).map((role)=><option value={ROLES[role]}>{ROLES[role]}</option>)}
-                        </select>
-                        </div>
-                        </div>
-                        <div style={{display:'flex',flex:4,flexDirection:'column',marginLeft:10}}>
-                        <p style={{fontSize:'.8rem',fontWeight:'bold'}}>Description</p>
-                        <textarea style={{width:'80%',height:'80%',borderRadius:5,border:'none',resize:'none',fontFamily:'sans-serif',paddingTop:'4px'}}/>
-                        <Button right={5} w={20} height={19} backgroundColor={"#0567a0"} alignSelf="center" mt={2} fontSize={'sm'}  variant={'solid'}> Submit </Button>
-                        </div>
-                    
-                </div>
-           </div>
+          <TaskDetailForm heading="CREATE" isEditable={true} users={this.props.users} submitTask={this.submitTask} />
         )   
     }
 }
 
+const mapStateToProps=(store)=>{
+    const {user,users}=store.UserReducer
+    return {
+        user,users
+    }
+}
 const mapDisptachToProp=(dispatch)=>{
 return {
-    getAllTasks:()=>dispatch(fetchTasks())
+    getAllUsers:()=>dispatch(fetchUsers())
 }
 }
-export default connect(null,mapDisptachToProp)(AddTaskContainer);
+export default connect(mapStateToProps,mapDisptachToProp)(AddTaskContainer);

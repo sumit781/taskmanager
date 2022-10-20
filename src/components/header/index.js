@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { NavLink} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { ROLES } from "../../constants";
+import { userLogout } from "../../reducers/auth";
 // import { NavLink } from "react-router-dom";
 
 const Link=styled(NavLink)`
@@ -29,21 +32,31 @@ font-weight: 900;
 margin-left: 2vw;
 color: white;
 `
-const headerOptions=[{name:"Taskboard",route:'/'},{name:"Add TASK",route:'/addTask'},{name:"Logout",route:'/logout'}]
-const Header= ()=>{
-    let onLogout=() =>{
-
+const adminHeaderOptions=[{name:"Taskboard",route:'/'},{name:"Add TASK",route:'/addTask'},{name:"Logout",route:'/logout'}]
+const userHeaderOptions=[{name:"Taskboard",route:'/'},{name:"Logout",route:'/logout'}]
+const Header= (props)=>{
+    const dispatch=useDispatch()
+    // const{user}=useSelector(store=>store.UserReducer)
+    let onLogout=() =>{ 
+        localStorage.removeItem('accessToken')
+        dispatch(userLogout())
     }
     return (
         <HeaderContainer>
                 <Heading>Dev Manager</Heading>
-                <div style={{height:'100%',width:'20rem',display:"flex",justifyContent:'space-between',alignItems:'center'}}>
-                        {
-                            headerOptions.map(item=>{
+                <div style={{height:'100%',width:'20rem',display:"flex",justifyContent:'space-evenly',alignItems:'center'}}>
+                    {
+                        console.log(props.user)
+                    }
+                        {  props.user!==null ?( props.user?.role==ROLES.admin?adminHeaderOptions.map((item,index)=>{
                                 return (
                                     <Link  key={item.name} to={item.route} onClick={item.name==="Logout"?onLogout:null}>{item.name.toUpperCase()}</Link>
                                 )
-                            })
+                            }):userHeaderOptions.map((item,index)=>{
+                                return (
+                                    <Link  key={item.name} to={item.route} onClick={item.name==="Logout"?onLogout:null}>{item.name.toUpperCase()}</Link>
+                                )
+                            })):null
                         }
                 </div>
            </HeaderContainer>

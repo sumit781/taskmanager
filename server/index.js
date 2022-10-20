@@ -9,6 +9,7 @@ const db = require('./models');
 const userConrollers = require('./controller/user.controller');
 const { mongoose } = require('./models');
 const taskController=require('./controller/task.controller')
+const {jwtTokenVerification}=require('./middlewares')
 db.mongoose
   .connect(`mongodb+srv://sumitsingh0103:qwertyuiop@taskmanager.ydotm8p.mongodb.net/?retryWrites=true&w=majority`, {
     useNewUrlParser: true,
@@ -45,9 +46,10 @@ app.listen(port, () => {
 })
 
 app.post('/auth',login)
-app.get('/users',userConrollers.getUsers)
-app.get('/tasks',taskController.getAllTask)
-app.post('/task',taskController.createTask)
+app.get('/users',jwtTokenVerification,userConrollers.getUsers)
+app.get('/tasks',jwtTokenVerification,taskController.getAllTask)
+app.post('/task',jwtTokenVerification,taskController.createTask)
+app.patch('/task',jwtTokenVerification,taskController.updatetaskStatus)
 
 // app.use((res,resp,next,err)=>{
 //   console.log(err)

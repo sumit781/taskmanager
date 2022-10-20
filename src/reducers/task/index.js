@@ -1,15 +1,22 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAllTasks } from "../../apis/task";
+import { getAllTasks, updateTask } from "../../apis/task";
 
 export const fetchTasks = createAsyncThunk(
     '/tasks',
     async () => {
-        console.log('entered')
       const response = await getAllTasks()
       console.log(response.data,'/// tasks')
       return response.data
     }
   )
+
+  export const updateSelectedTask = createAsyncThunk('/updateTask',
+  async (data)=>{
+    console.log(data,'///// id status')
+    const response = await updateTask(data.id,data.value)
+    console.log(response.data,'/// updated task')
+    return response.data
+  })
 const TaskReducer = createSlice({
     name:'TaskReducer',
     initialState:{
@@ -49,10 +56,14 @@ const TaskReducer = createSlice({
             return {
                 title:item.title,
                 status:item.status,
-                assignedTo:item.assignedTo.name
+                assignedTo:item.assignedTo.name,
+                role:item.assignedTo.role
             }
         })
         state.tasksDetails=action.payload.tasks
+        })
+        builder.addCase(updateSelectedTask.fulfilled,(state,action)=>{
+            return state
         })
       },
 })
